@@ -77,7 +77,7 @@ jobs:
         mkdir -p AppDir/usr/bin
         cp -r build/us_pc/* AppDir/usr/bin
     - name: Generate AppImage
-        run: NO_STRIP=true squashfs-root/AppRun --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
+      run: NO_STRIP=true squashfs-root/AppRun --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
       uses: actions/upload-artifact@v4.3.1
       with:
