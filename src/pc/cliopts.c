@@ -22,6 +22,7 @@ static void print_help(void) {
     printf("%-20s\tStarts the game in full screen mode.\n", "--fullscreen");
     printf("%-20s\tSkips the Peach and Castle intro when starting a new game.\n", "--skip-intro");
     printf("%-20s\tStarts the game in windowed mode.\n", "--windowed");
+    printf("%-20s\tSelects the ROM file to use.\n", "--rom");
     printf("%-20s\tOnly extracts the assets, then quit.\n", "--only-extract");
 }
 
@@ -45,6 +46,8 @@ static inline int arg_uint(UNUSED const char *name, const char *value, unsigned 
 void parse_cli_opts(int argc, char* argv[]) {
     // Initialize options with false values.
     memset(&gCLIOpts, 0, sizeof(gCLIOpts));
+    char *defaultRomPath = "sm64.z64";
+    strncpy(gCLIOpts.RomPath, defaultRomPath, SYS_MAX_PATH);
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--skip-intro") == 0) // Skip Peach Intro
@@ -73,6 +76,9 @@ void parse_cli_opts(int argc, char* argv[]) {
 
         else if (strcmp(argv[i], "--savepath") == 0 && (i + 1) < argc)
             arg_string("--savepath", argv[++i], gCLIOpts.SavePath);
+
+        else if (strcmp(argv[i], "--rom") == 0 && (i + 1) < argc)
+            arg_string("--rom", argv[++i], gCLIOpts.RomPath);
 
         else if (strcmp(argv[i], "--only-extract") == 0) // Only extracts the assets, then quit
             gCLIOpts.ExtractOnly = 1;

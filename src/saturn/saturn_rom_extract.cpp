@@ -13,6 +13,9 @@
 
 extern "C" {
 #include "pc/pc_main.h"
+#ifdef FILE_PICKER
+#include "pc/gtk/filepicker.h"
+#endif
 #include "pc/platform.h"
 #include "pc/pngutils.h"
 #include "pc/cliopts.h"
@@ -312,7 +315,12 @@ int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::strin
         }
     }
     if (!needs_extract) return ROM_OK;
-    if (!std::filesystem::exists("sm64.z64") && needs_rom) return ROM_MISSING;
+    if (needs_rom && !std::filesystem::exists(gCLIOpts.RomPath)) {
+#ifdef FILE_PICKER
+        open_file_picker();
+#endif
+        if (!std::filesystem::exists(gCLIOpts.RomPath)) return ROM_MISSING;
+    }
     return ROM_NEED_EXTRACT;
 }
 
@@ -323,7 +331,7 @@ int saturn_extract_rom(int type) {
 
     if (status == ROM_OK) return ROM_OK;
     if (status == ROM_MISSING) {
-        pfd::message("Missing ROM","Cannot find sm64.z64\n\nPlease place an unmodified, US Super Mario 64 ROM next to the .exe and name it \"sm64.z64\"", pfd::choice::ok);
+        pfd::message("Missing ROM", "Cannot find sm64.z64\n\nPlease relaunch the app when you are ready to select your unmodified US Super Mario 64 z64 ROM by placing \"sm64.z64\" in the current working directory, using the --rom argument, or using the GTK file picker.", pfd::choice::ok);
         return ROM_MISSING;
     }
     if (status == ROM_INVALID) {
@@ -331,7 +339,7 @@ int saturn_extract_rom(int type) {
         return ROM_INVALID;
     }
     extraction_progress = 0;
-    std::ifstream stream = std::ifstream("sm64.z64", std::ios::binary);
+    std::ifstream stream = std::ifstream(gCLIOpts.RomPath, std::ios::binary);
     unsigned char* data = (unsigned char*)malloc(1024 * 1024 * 8);
     stream.read((char*)data, 1024 * 1024 * 8);
     stream.close();

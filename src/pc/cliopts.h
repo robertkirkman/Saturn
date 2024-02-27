@@ -11,6 +11,7 @@ struct PCCLIOptions  {
     unsigned int ExtractOnly;
     char ConfigFile[SYS_MAX_PATH];
     char SavePath[SYS_MAX_PATH];
+    char RomPath[SYS_MAX_PATH];
     char GameDir[SYS_MAX_PATH];
 };
 

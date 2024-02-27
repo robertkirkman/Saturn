@@ -33,6 +33,9 @@ OSX_BUILD ?= 0
 # Enable -no-pie linker option
 NO_PIE ?= 1
 
+# Enable ROM file picker
+FILE_PICKER ?= 0
+
 # Specify the target you are building for, TARGET_BITS=0 means native
 TARGET_ARCH ?= native
 TARGET_BITS ?= 0
@@ -314,6 +317,10 @@ SRC_DIRS += src/saturn/libs/imgui
 SRC_DIRS += src/saturn/filesystem
 SRC_DIRS += src/saturn/cmd
 
+ifeq ($(FILE_PICKER),1)
+  SRC_DIRS += src/pc/gtk
+endif
+
 BIN_DIRS := bin bin/$(VERSION)
 
 ULTRA_SRC_DIRS := lib/src lib/src/math
@@ -587,6 +594,11 @@ ifneq ($(SDL1_USED)$(SDL2_USED),00)
   endif
 endif
 
+ifeq ($(FILE_PICKER),1)
+  INCLUDE_CFLAGS += $(shell pkg-config --cflags gtk4)
+  BACKEND_LDFLAGS += $(shell pkg-config --libs gtk4)
+endif
+
 ifeq ($(WINDOWS_BUILD),1)
   CC_CHECK := $(CC) -fsyntax-only -fsigned-char $(BACKEND_CFLAGS) $(INCLUDE_CFLAGS) -Wall -Wextra -Wno-format-security $(VERSION_CFLAGS) $(GRUCODE_CFLAGS)
   CFLAGS := $(OPT_FLAGS) $(INCLUDE_CFLAGS) $(BACKEND_CFLAGS) $(VERSION_CFLAGS) $(GRUCODE_CFLAGS) -fno-strict-aliasing -fwrapv -fdiagnostics-color
@@ -672,6 +684,12 @@ endif
 ifeq ($(LEGACY_GL),1)
   CC_CHECK += -DLEGACY_GL
   CFLAGS += -DLEGACY_GL
+endif
+
+# Enable ROM file picker GUI
+ifeq ($(FILE_PICKER),1)
+  CC_CHECK += -DFILE_PICKER
+  CFLAGS += -DFILE_PICKER -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_4_12
 endif
 
 # Load external textures
