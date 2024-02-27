@@ -53,7 +53,7 @@ jobs:
         name: saturn-${{ github.run_number }}-${{ github.job }}
         path: /home/runner/work/Saturn/Saturn/build/us_pc
 
-  linux:
+  linux-appimage:
     name: Linux (AppImage) (glibc 2.37)
     runs-on: ubuntu-latest
     container: fedora:38
