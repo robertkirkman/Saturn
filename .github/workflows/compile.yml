@@ -59,14 +59,16 @@ jobs:
     container: fedora:38
     steps:
     - uses: actions/checkout@v4.1.1
-    - name: Fetch Dependencies
+    - name: Fetch Dependencies from Fedora
       run: |
         sudo dnf install -y wget make git gcc g++ python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-devel
+    - name: Install linuxdeploy
         wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
         chmod +x linuxdeploy-x86_64.AppImage
+        ./linuxdeploy-x86_64.AppImage --appimage-extract
     - name: Build Saturn
-      run: FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 DISCORD_SDK=0 make
-    - name: Build AppImage
+      run: FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 DISCORD_SDK=0 make -j$(nproc)
+    - name: Install Saturn to AppDir
       run: |
         cd build/us_pc
         rm -rf textures text src sound lib levels include data bin assets actors res
@@ -74,7 +76,8 @@ jobs:
         cd ../../
         mkdir -p AppDir/usr/bin
         cp -r build/us_pc/* AppDir/usr/bin
-        NO_STRIP=true ./linuxdeploy-x86_64.AppImage --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
+    - name: Generate AppImage
+        run: NO_STRIP=true squashfs-root/AppRun --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
       uses: actions/upload-artifact@v4.3.1
       with:

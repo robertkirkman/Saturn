@@ -102,3 +102,4 @@ res/sound
 # AppImage
 AppDir/*
 *.AppImage*
+squashfs-root/*
