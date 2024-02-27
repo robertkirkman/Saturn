@@ -237,7 +237,7 @@ ImGuiDir to_dir(std::string dir) {
 }
 
 void imgui_custom_theme(std::string theme_name) {
-    std::filesystem::path path = std::filesystem::path("dynos/themes/" + theme_name + ".json");
+    std::filesystem::path path = std::filesystem::path(std::string(sys_exe_path()) + "/dynos/themes/" + theme_name + ".json");
     if (!std::filesystem::exists(path)) return;
     std::ifstream file = std::ifstream(path);
     Json::Value json;
@@ -383,7 +383,7 @@ void imgui_update_theme() {
     else if (configEditorTheme == 3) editor_theme = "moviemaker";
     else if (configEditorTheme == 4) editor_theme = "dear";
     else {
-        for (const auto& entry : std::filesystem::directory_iterator("dynos/themes")) {
+        for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_exe_path()) + "/dynos/themes")) {
             std::filesystem::path path = entry.path();
             if (path.extension().string() != ".json") continue;
             std::string name = path.filename().string();
@@ -422,7 +422,7 @@ void saturn_imgui_init_backend(SDL_Window * sdl_window, SDL_GLContext ctx) {
 }
 
 void saturn_load_themes() {
-    for (const auto& entry : std::filesystem::directory_iterator("dynos/themes")) {
+    for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_exe_path()) + "/dynos/themes")) {
         std::filesystem::path path = entry.path();
         if (path.extension().string() != ".json") continue;
         std::string id = path.filename().string();
