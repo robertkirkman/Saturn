@@ -34,7 +34,7 @@ jobs:
   linux:
     name: Linux
 
-    runs-on: ubuntu-jammy
+    runs-on: ubuntu-mantic
 
     steps:
     - uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
       run: sudo apt install -y build-essential git python3 libglew-dev libsdl2-dev curl libcurl4-gnutls-dev libjsoncpp-dev libgtk-4-dev
     - name: Build
       run: |
-        FILE_DIALOG=1 make
+        FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 make
         cd build/us_pc
         rm -rf textures text src sound lib levels include data bin assets actors res
         rm -f level_rules.mk
@@ -51,6 +51,8 @@ jobs:
         cp -r build/us_pc/* AppDir/
     - name: Build AppImage
       uses: AppImageCrafters/build-appimage-action@master
+      with:
+        recipe: .github/workflows/AppImageBuilder.yml
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
