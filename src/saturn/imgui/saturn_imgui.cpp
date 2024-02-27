@@ -126,7 +126,7 @@ char cli_input[CLI_MAX_INPUT_SIZE];
 #include "saturn/saturn_timelines.h"
 
 void saturn_load_macros() {
-    std::string dir = "dynos/macros/" + current_macro_dir;
+    std::string dir = std::string(sys_exe_path()) + "/dynos/macros/" + current_macro_dir;
     macro_array.clear();
     current_macro_id = -1;
     current_macro_dir_count = 1;
@@ -738,7 +738,7 @@ void saturn_imgui_update() {
                     for (int i = 0; i < macro_array.size(); i++) {
                         std::string macro = macro_array[i];
                         bool selected = false;
-                        if (filesystem::is_directory("dynos/macros/" + current_macro_dir + macro)) {
+                        if (filesystem::is_directory(std::string(sys_exe_path()) + "/dynos/macros/" + current_macro_dir + macro)) {
                             if (ImGui::Selectable((std::string(ICON_FK_FOLDER " ") + macro).c_str(), &selected)) {
                                 if (macro == "../") {
                                     current_macro_dir = macro_dir_stack[macro_dir_stack.size() - 1];
@@ -765,7 +765,7 @@ void saturn_imgui_update() {
                     if (current_macro_id == -1) ImGui::BeginDisabled();
                     if (ImGui::Button("Run")) {
                         saturn_cmd_clear_registers();
-                        saturn_cmd_eval_file("dynos/macros/" + current_macro_dir + macro_array[current_macro_id]);
+                        saturn_cmd_eval_file(std::string(sys_exe_path()) + "/dynos/macros/" + current_macro_dir + macro_array[current_macro_id]);
                     }
                     if (current_macro_id == -1) ImGui::EndDisabled();
                     ImGui::SameLine();
