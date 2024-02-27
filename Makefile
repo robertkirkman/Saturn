@@ -595,7 +595,7 @@ ifneq ($(SDL1_USED)$(SDL2_USED),00)
 endif
 
 ifeq ($(FILE_PICKER),1)
-  BACKEND_CFLAGS += -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_4_12
+  BACKEND_CFLAGS += -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_4_10
   INCLUDE_CFLAGS += $(shell pkg-config --cflags gtk4)
   BACKEND_LDFLAGS += $(shell pkg-config --libs gtk4)
 endif

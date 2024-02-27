@@ -33,27 +33,49 @@ jobs:
 
   linux:
     name: Linux
+
     runs-on: ubuntu-latest
-    container: fedora:39
+
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v3
     - name: Fetch Dependencies
-      run: sudo dnf install -y make gcc python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-devel
-    - name: Install LinuxDeploy
-      uses: miurahr/install-linuxdeploy-action@v1.7.0
-      with:
-        plugins: appimage
-    - name: Build AppImage
+      run: sudo apt install -y build-essential git python3 libglew-dev libsdl2-dev curl libcurl4-gnutls-dev libjsoncpp-dev
+    - name: Build
       run: |
-        FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 DISCORD_SDK=0 make
+        make
         cd build/us_pc
         rm -rf textures text src sound lib levels include data bin assets actors res
         rm -f level_rules.mk
         cd ../../
-        mkdir AppDir
-        cp -r build/us_pc/* AppDir/
-        linuxdeploy --appdir AppDir --output Saturn.AppImage
     - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: saturn-${{ github.run_number }}-${{ github.job }}
+        path: /home/runner/work/Saturn/Saturn/build/us_pc
+
+  linux:
+    name: Linux (AppImage) (glibc 2.37)
+    runs-on: ubuntu-latest
+    container: fedora:38
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: Fetch Dependencies
+      run: |
+        sudo dnf install -y wget make gcc python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-devel
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+    - name: Build Saturn
+      run: FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 DISCORD_SDK=0 make
+    - name: Build AppImage
+      run: |
+        cd build/us_pc
+        rm -rf textures text src sound lib levels include data bin assets actors res
+        rm -f level_rules.mk
+        cd ../../
+        mkdir -p AppDir/usr/bin
+        cp -r build/us_pc/* AppDir/usr/bin
+        NO_STRIP=true ./linuxdeploy-x86_64.AppImage --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4.3.1
       with:
         name: saturn-${{ github.run_number }}-${{ github.job }}
