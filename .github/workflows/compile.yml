@@ -2,7 +2,7 @@ name: Compile
 
 on:
   push:
-    branches: [ "legacy" ]
+    branches: [ "appimage" ]
 
 jobs:
   windows:
@@ -39,16 +39,21 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Fetch Dependencies
-      run: sudo apt install -y build-essential git python3 libglew-dev libsdl2-dev curl libcurl4-gnutls-dev libjsoncpp-dev
+      run: sudo apt install -y build-essential git python3 libglew-dev libsdl2-dev curl libcurl4-gnutls-dev libjsoncpp-dev libgtk-4-dev
     - name: Build
       run: |
-        make
+        FILE_DIALOG=1 make
         cd build/us_pc
         rm -rf textures text src sound lib levels include data bin assets actors res
         rm -f level_rules.mk
         cd ../../
+        mkdir AppDir
+        cp -r build/us_pc/* AppDir/
+    - name: Build AppImage
+      uses: AppImageCrafters/build-appimage-action@master
+      with:
+        recipe: AppImageBuilder.yml
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: saturn-${{ github.run_number }}-${{ github.job }}
-        path: /home/runner/work/Saturn/Saturn/build/us_pc
