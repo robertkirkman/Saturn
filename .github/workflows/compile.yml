@@ -75,12 +75,11 @@ jobs:
         rm -rf textures text src sound lib levels include data bin assets actors res
         rm -f level_rules.mk
         cd ../../
-        mkdir -p AppDir/usr/bin
+        mkdir -p AppDir/usr/{bin,lib,share}
         mv build/us_pc/saturn.us.f3dex2e AppDir/usr/bin/
-        cp -r build/us_pc/* AppDir/
+        cp -r build/us_pc/* AppDir/usr/share/
     - name: Install additional necessary libraries to AppDir
       run: |
-        mkdir AppDir/usr/lib
         cp /usr/lib64/libthai* AppDir/usr/lib/
     - name: Generate AppImage
       run: NO_STRIP=true squashfs-root/AppRun --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage

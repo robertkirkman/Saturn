@@ -1836,41 +1836,37 @@ ImU64   ImFileWrite(const void* data, ImU64 sz, ImU64 count, ImFileHandle f)    
 // This can't really be used with "rt" because fseek size won't match read size.
 void*   ImFileLoadToMemory(const char* filename, const char* mode, size_t* out_file_size, int padding_bytes)
 {
-    printf("1\n");
     IM_ASSERT(filename && mode);
     if (out_file_size)
         *out_file_size = 0;
-    printf("2\n");
+
     ImFileHandle f;
     if ((f = ImFileOpen(filename, mode)) == NULL)
         return NULL;
-    printf("3\n");
+
     size_t file_size = (size_t)ImFileGetSize(f);
     if (file_size == (size_t)-1)
     {
         ImFileClose(f);
         return NULL;
     }
-    printf("4\n");
+
     void* file_data = IM_ALLOC(file_size + padding_bytes);
     if (file_data == NULL)
     {
         ImFileClose(f);
         return NULL;
     }
-    printf("5\n");
     if (ImFileRead(file_data, 1, file_size, f) != file_size)
     {
         ImFileClose(f);
         IM_FREE(file_data);
         return NULL;
     }
-    printf("6\n");
     if (padding_bytes > 0)
         memset((void*)(((char*)file_data) + file_size), 0, (size_t)padding_bytes);
 
     ImFileClose(f);
-    printf("7\n");
     if (out_file_size)
         *out_file_size = file_size;
 
