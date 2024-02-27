@@ -48,7 +48,7 @@ static void launch_gtk_gui(GtkApplication *app) {
 int open_file_picker(void) {
     int status;
 
-    app = gtk_application_new("com.owokitty.Saturn", G_APPLICATION_DEFAULT_FLAGS);
+    app = gtk_application_new("com.Llennpie.Saturn", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(launch_gtk_gui), NULL);
     status = g_application_run(G_APPLICATION(app), 0, NULL);
     g_object_unref(app);

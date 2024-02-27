@@ -33,28 +33,28 @@ jobs:
 
   linux:
     name: Linux
-
-    runs-on: ubuntu-mantic
-
+    runs-on: ubuntu-latest
+    container: fedora:39
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.1.1
     - name: Fetch Dependencies
-      run: sudo apt install -y build-essential git python3 libglew-dev libsdl2-dev curl libcurl4-gnutls-dev libjsoncpp-dev libgtk-4-dev
-    - name: Build
+      run: sudo dnf install make gcc python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-dvel
+    - name: Install LinuxDeploy
+      uses: miurahr/install-linuxdeploy-action@v1.7.0
+      with:
+        plugins: appimage
+    - name: Build AppImage
       run: |
-        FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 make
+        FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 DISCORD_SDK=0 make
         cd build/us_pc
         rm -rf textures text src sound lib levels include data bin assets actors res
         rm -f level_rules.mk
         cd ../../
         mkdir AppDir
         cp -r build/us_pc/* AppDir/
-    - name: Build AppImage
-      uses: AppImageCrafters/build-appimage-action@master
-      with:
-        recipe: .github/workflows/AppImageBuilder.yml
+        linuxdeploy --appdir AppDir --output Saturn.AppImage
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4.3.1
       with:
         name: saturn-${{ github.run_number }}-${{ github.job }}
-        path: './*.AppImage*'
+        path: 'Saturn.AppImage'
