@@ -331,7 +331,7 @@ int saturn_extract_rom(int type) {
 
     if (status == ROM_OK) return ROM_OK;
     if (status == ROM_MISSING) {
-        pfd::message("Missing ROM", "Cannot find sm64.z64\n\nPlease relaunch the app when you are ready to select your unmodified US Super Mario 64 z64 ROM by placing \"sm64.z64\" in the current working directory, using the --rom argument, or using the GTK file picker.", pfd::choice::ok);
+        pfd::message("Missing ROM", "Cannot find sm64.z64\n\nPlease select your unmodified US Super Mario 64 z64 ROM by placing \"sm64.z64\" in the current working directory, using the --rom argument, or using the GTK file picker.", pfd::choice::ok);
         return ROM_MISSING;
     }
     if (status == ROM_INVALID) {
