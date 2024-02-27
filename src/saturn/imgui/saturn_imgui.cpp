@@ -372,7 +372,8 @@ void imgui_update_theme() {
         symbolConfig.SizePixels = 13.0f * SCALE;
         symbolConfig.GlyphMinAdvanceX = 13.0f * SCALE; // Use if you want to make the icon monospaced
         static const ImWchar icon_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
-        io.Fonts->AddFontFromFileTTF("fonts/forkawesome-webfont.ttf", symbolConfig.SizePixels, &symbolConfig, icon_ranges);
+        std::string fontPath = std::string(sys_exe_path()) + "/fonts/forkawesome-webfont.ttf";
+        io.Fonts->AddFontFromFileTTF(fontPath.c_str(), symbolConfig.SizePixels, &symbolConfig, icon_ranges);
     }
 
     // backwards compatibility with older theme settings

@@ -19,6 +19,7 @@ static void print_help(void) {
     printf("%-20s\tSaves the configuration file as CONFIGNAME.\n", "--configfile CONFIGNAME");
     printf("%-20s\tSets additional data directory name (only 'res' is used by default).\n", "--gamedir DIRNAME");
     printf("%-20s\tOverrides the default save/config path ('!' expands to executable path).\n", "--savepath SAVEPATH");
+    printf("%-20s\tSets a relative share directory for AppImages.\n", "--sharedir DIRNAME");
     printf("%-20s\tStarts the game in full screen mode.\n", "--fullscreen");
     printf("%-20s\tSkips the Peach and Castle intro when starting a new game.\n", "--skip-intro");
     printf("%-20s\tStarts the game in windowed mode.\n", "--windowed");
@@ -49,6 +50,13 @@ void parse_cli_opts(int argc, char* argv[]) {
     char *defaultRomPath = "sm64.z64";
     strncpy(gCLIOpts.RomPath, defaultRomPath, SYS_MAX_PATH);
 
+    // AppImage AppDir
+    const char *appdir = getenv("APPDIR"); // AppImage environment variable
+    if (appdir != NULL) {
+        strncpy(gCLIOpts.ShareDir, appdir, SYS_MAX_PATH);
+        strncat(gCLIOpts.ShareDir, "/usr/share/", SYS_MAX_PATH);
+    }
+
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--skip-intro") == 0) // Skip Peach Intro
             gCLIOpts.SkipIntro = 1;
@@ -73,6 +81,9 @@ void parse_cli_opts(int argc, char* argv[]) {
 
         else if (strcmp(argv[i], "--gamedir") == 0 && (i + 1) < argc)
             arg_string("--gamedir", argv[++i], gCLIOpts.GameDir);
+
+        else if (strcmp(argv[i], "--sharedir") == 0 && (i + 1) < argc)
+            arg_string("--sharedir", argv[++i], gCLIOpts.ShareDir);
 
         else if (strcmp(argv[i], "--savepath") == 0 && (i + 1) < argc)
             arg_string("--savepath", argv[++i], gCLIOpts.SavePath);
