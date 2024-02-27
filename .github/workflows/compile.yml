@@ -38,7 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     - name: Fetch Dependencies
-      run: sudo dnf install make gcc python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-dvel
+      run: sudo dnf install make gcc python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-devel
     - name: Install LinuxDeploy
       uses: miurahr/install-linuxdeploy-action@v1.7.0
       with:
