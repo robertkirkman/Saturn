@@ -76,9 +76,12 @@ jobs:
         rm -f level_rules.mk
         cd ../../
         mkdir -p AppDir/usr/bin
-        cp -r build/us_pc/* AppDir/usr/bin/
+        mv build/us_pc/saturn.us.f3dex2e AppDir/usr/bin/
+        cp -r build/us_pc/* AppDir/
     - name: Install additional necessary libraries to AppDir
-      run: cp /usr/lib64/libthai* AppDir/usr/lib64/
+      run: |
+        mkdir AppDir/usr/lib
+        cp /usr/lib64/libthai* AppDir/usr/lib/
     - name: Generate AppImage
       run: NO_STRIP=true squashfs-root/AppRun --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
