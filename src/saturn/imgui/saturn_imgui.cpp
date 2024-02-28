@@ -64,6 +64,7 @@
 extern "C" {
 #include "pc/gfx/gfx_pc.h"
 #include "pc/configfile.h"
+#include "pc/platform.h"
 #include "game/mario.h"
 #include "game/game_init.h"
 #include "game/camera.h"

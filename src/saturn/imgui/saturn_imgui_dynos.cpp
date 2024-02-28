@@ -238,7 +238,7 @@ void OpenModelSelector() {
                     if (ImGui::Button(ICON_FK_DOWNLOAD " Refresh Packs###refresh_dynos_packs")) {
                         sDynosPacks.Clear();
                         DynOS_Opt_Init();
-                        model_list = GetModelList("dynos/packs");
+                        model_list = GetModelList(std::string(sys_exe_path()) + "/dynos/packs");
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::SameLine(); imgui_bundled_help_marker("WARNING: Experimental - this will probably lag the game.");
@@ -263,7 +263,7 @@ void OpenModelSelector() {
 void sdynos_imgui_init() {
     LoadEyesFolder();
 
-    model_list = GetModelList("dynos/packs");
+    model_list = GetModelList(std::string(sys_exe_path()) + "/dynos/packs");
     RefreshColorCodeList();
 
     //model_details = "" + std::to_string(sDynosPacks.Count()) + " model pack";

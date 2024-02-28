@@ -25,6 +25,7 @@ extern "C" {
 #include "sm64.h"
 #include "pc/gfx/gfx_pc.h"
 #include "levels/castle_inside/header.h"
+#include "pc/platform.h"
 }
 
 using namespace std;
@@ -148,9 +149,9 @@ Expression VanillaEyes;
 /* Loads textures from dynos/eyes/ into a global Expression */
 void LoadEyesFolder() {
     // Check if the dynos/eyes/ folder exists
-    if (fs::is_directory("dynos/eyes")) {
+    if (fs::is_directory(std::string(sys_exe_path()) + "/dynos/eyes")) {
         VanillaEyes.Name = "eyes";
-        VanillaEyes.FolderPath = "dynos/eyes";
+        VanillaEyes.FolderPath = std::string(sys_exe_path()) + "/dynos/eyes";
         VanillaEyes.Textures = LoadExpressionTextures(VanillaEyes.FolderPath, VanillaEyes);
         VanillaEyes.Folders = LoadExpressionFolders(VanillaEyes.FolderPath);
     }

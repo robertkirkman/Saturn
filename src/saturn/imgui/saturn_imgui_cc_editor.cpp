@@ -18,6 +18,10 @@
 #include "saturn/imgui/saturn_imgui_dynos.h"
 #include "icons/IconsForkAwesome.h"
 
+extern "C" {
+#include "pc/platform.h"
+}
+
 // UI Variables; Used by specifically ImGui
 
 int uiCcListId;
@@ -229,7 +233,7 @@ void RefreshColorCodeList() {
         model_color_code_list = GetColorCodeList(current_model.FolderPath + "/colorcodes");
     } else {
         color_code_list.clear();
-        color_code_list = GetColorCodeList("dynos/colorcodes");
+        color_code_list = GetColorCodeList(std::string(sys_exe_path()) + "dynos/colorcodes");
     }
 }
 
@@ -354,7 +358,7 @@ void OpenCCSelector() {
             uiCcListId = n + 1;
 
             // Overwrite current color code
-            current_color_code = LoadGSFile(color_code_list[n], "dynos/colorcodes");
+            current_color_code = LoadGSFile(color_code_list[n], std::string(sys_exe_path()) + "/dynos/colorcodes");
             ApplyColorCode(current_color_code);
             if (label_name_lower == "mario") {
                 label_name = "Sample";
@@ -378,7 +382,7 @@ void OpenCCSelector() {
 
                     ImGui::Text("Are you sure you want to delete %s?", label_name.c_str());
                     if (ImGui::Button("Yes")) {
-                        DeleteGSFile("dynos/colorcodes/" + label_name + ".gs");
+                        DeleteGSFile(std::string(sys_exe_path()) + "/dynos/colorcodes/" + label_name + ".gs");
                         RefreshColorCodeList();
                         ImGui::CloseCurrentPopup();
                     } ImGui::SameLine();
@@ -544,7 +548,7 @@ void OpenCCEditor() {
 
     if (ImGui::Button(ICON_FK_FILE_TEXT " File###save_cc_to_file")) {
         UpdatePaletteFromEditor();
-        SaveGSFile(current_color_code, "dynos/colorcodes");
+        SaveGSFile(current_color_code, std::string(sys_user_path()) + "/dynos/colorcodes");
         RefreshColorCodeList();
     }
     ImGui::Dummy(ImVec2(0, 0));

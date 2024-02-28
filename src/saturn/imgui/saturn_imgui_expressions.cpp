@@ -24,6 +24,7 @@
 extern "C" {
 #include "pc/gfx/gfx_pc.h"
 #include "pc/configfile.h"
+#include "pc/platform.h"
 }
 
 extern void open_directory(std::string);

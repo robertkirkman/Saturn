@@ -10,6 +10,10 @@
 #include <filesystem>
 #include "saturn/saturn_textures.h"
 
+extern "C" {
+#include "pc/platform.h"
+}
+
 class Model {
     public:
         /* Returns true if the model.json was successfully loaded */
@@ -17,7 +21,7 @@ class Model {
         int DynOSId = -1;
 
         std::string FolderName = "Mario";
-        std::string FolderPath;
+        std::string FolderPath = std::string(sys_exe_path());
 
         // Metadata
         std::string Name;
