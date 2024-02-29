@@ -43,7 +43,7 @@ static void launch_gtk_gui(GtkApplication *app) {
     gtk_file_dialog_set_title(dialog, "Select ROM");
     gtk_file_dialog_open(dialog, GTK_WINDOW(sFileDialogParentWindow), NULL, open_dialog_callback, NULL);
     // gtk_window_present(gFileDialogParentWindow); // will make parent window visible
-    g_object_unref(dialog);
+
 }
 
 // entrypoint to spawn the file picker GUI and block execution until return
