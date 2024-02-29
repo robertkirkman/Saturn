@@ -329,27 +329,39 @@ int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::strin
 // usually ~/.local/share/v64saturn
 int copy_custom_assets(void) {
     // AppImage environment variable
-    char *appdir_cstr = std::getenv("APPDIR");
-    std::string srcdir;
+    const char *appdir_cstr = std::getenv("APPDIR");
+    const char *exe_path_cstr = sys_exe_path();
+    const char *user_path_cstr = sys_user_path();
+
+    if ((exe_path_cstr == NULL && appdir_cstr == NULL) || user_path_cstr == NULL) {
+
+        pfd::message("Failed to copy custom assets", "Failed to locate requred directories!");
+        return 4;
+    }
+
+    std::string srcdir, destdir = std::string(user_path_cstr);
 
     // This affects non-AppImage builds also which means that if I leave it this way,
     // all AppImage support might need to be toggled by a condition.
     if (appdir_cstr == NULL) {
-        srcdir = std::string(sys_exe_path());
+        srcdir = std::string(exe_path_cstr);
     }
     else {
         srcdir = std::string(appdir_cstr) + "/custom_assets/";
     }
     if (!std::filesystem::exists(srcdir)) {
         pfd::message("Failed to copy custom assets", "Failed to detect required custom asset files for Saturn!");
-        return 4;
+        return 5;
+    }
+    if (srcdir == destdir) {
+        return 0;
     }
 
     // https://stackoverflow.com/a/51431426/11708026
     // This copies way more than necessary, but the extra files don't break anything,
     // and when I once hardcoded a whitelist of files to copy out of an Android .apk,
     // eventually I had to edit it to add more names, and others actually became 
-    // confused when they tried to add files and couldn't find the whitelist
+    // confused when they tried to add files to the build and couldn't find the whitelist.
     try {
         std::filesystem::copy(std::filesystem::path(srcdir),
                               std::filesystem::path(sys_user_path()),
@@ -359,7 +371,7 @@ int copy_custom_assets(void) {
     catch (std::exception& e) {
         pfd::message("Failed to copy custom assets", "Failed to copy required custom asset files for Saturn!");
         std::cout << e.what();
-        return 5;
+        return 6;
     }
 
     return 0;
