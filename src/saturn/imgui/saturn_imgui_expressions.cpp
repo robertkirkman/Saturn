@@ -105,7 +105,7 @@ void ShowTextureContextMenu(Expression* expression, TexturePath texture, int id)
         }
         // Label
         if (ImGui::Selectable(("%s/", texture.FileName.c_str()), false)) {
-            open_directory(std::string(sys_exe_path()) + "/" + texture.ParentPath() + "/");
+            open_directory(std::string(sys_user_path()) + "/" + texture.ParentPath() + "/");
             ImGui::CloseCurrentPopup();
         }
         imgui_bundled_tooltip(("/%s", texture.FilePath).c_str());

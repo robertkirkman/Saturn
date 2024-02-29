@@ -324,6 +324,47 @@ int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::strin
     return ROM_NEED_EXTRACT;
 }
 
+// AppImage AppDir
+// copy external files from out of read-only AppImage to read-write user folder, 
+// usually ~/.local/share/v64saturn
+int copy_custom_assets(void) {
+    // AppImage environment variable
+    char *appdir_cstr = std::getenv("APPDIR");
+    std::string srcdir;
+
+    // This affects non-AppImage builds also which means that if I leave it this way,
+    // all AppImage support might need to be toggled by a condition.
+    if (appdir_cstr == NULL) {
+        srcdir = std::string(sys_exe_path());
+    }
+    else {
+        srcdir = std::string(appdir_cstr) + "/custom_assets/";
+    }
+    if (!std::filesystem::exists(srcdir)) {
+        pfd::message("Failed to copy custom assets", "Failed to detect required custom asset files for Saturn!");
+        return 4;
+    }
+
+    // https://stackoverflow.com/a/51431426/11708026
+    // This copies way more than necessary, but the extra files don't break anything,
+    // and when I once hardcoded a whitelist of files to copy out of an Android .apk,
+    // eventually I had to edit it to add more names, and others actually became 
+    // confused when they tried to add files and couldn't find the whitelist
+    try {
+        std::filesystem::copy(std::filesystem::path(srcdir),
+                              std::filesystem::path(sys_user_path()),
+                              std::filesystem::copy_options::overwrite_existing |
+                              std::filesystem::copy_options::recursive);
+    }
+    catch (std::exception& e) {
+        pfd::message("Failed to copy custom assets", "Failed to copy required custom asset files for Saturn!");
+        std::cout << e.what();
+        return 5;
+    }
+
+    return 0;
+}
+
 int saturn_extract_rom(int type) {
     std::filesystem::path extract_dest = EXTRACT_PATH;
     std::vector<std::string> todo = {};

@@ -16,6 +16,7 @@ extern std::string currently_extracting;
 
 extern "C" {
 #endif
+    int copy_custom_assets(void);
     int saturn_extract_rom(int type);
 #ifdef __cplusplus
 }

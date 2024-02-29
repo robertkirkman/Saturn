@@ -133,6 +133,8 @@ void expression_preview(const char* filename) {
 }
 
 void OpenModelSelector() {
+    std::string packs_dir_path = std::string(sys_user_path()) + "/dynos/packs/";
+
     ImGui::Text("Model Packs");
     ImGui::SameLine(); imgui_bundled_help_marker(
         "DynOS v1.1 by PeachyPeach\n\nThese are DynOS model packs, used for live model loading.\nPlace packs in /dynos/packs.");
@@ -219,7 +221,7 @@ void OpenModelSelector() {
 
                     imgui_bundled_tooltip(("/%s", model.FolderPath).c_str());
                     if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-                        open_directory(std::string(sys_exe_path()) + "/" + model.FolderPath + "/");
+                        open_directory(std::string(sys_user_path()) + "/" + model.FolderPath + "/");
 
                     ImGui::SameLine(); ImGui::TextDisabled(" Pack #%i", model.DynOSId + 1);
 
@@ -238,7 +240,7 @@ void OpenModelSelector() {
                     if (ImGui::Button(ICON_FK_DOWNLOAD " Refresh Packs###refresh_dynos_packs")) {
                         sDynosPacks.Clear();
                         DynOS_Opt_Init();
-                        model_list = GetModelList(std::string(sys_exe_path()) + "/dynos/packs");
+                        model_list = GetModelList(packs_dir_path);
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::SameLine(); imgui_bundled_help_marker("WARNING: Experimental - this will probably lag the game.");
@@ -256,14 +258,14 @@ void OpenModelSelector() {
         // Open DynOS Folder Button
 
         if (ImGui::Button(ICON_FK_FOLDER_OPEN_O " Open Packs Folder...###open_packs_folder"))
-            open_directory(std::string(sys_exe_path()) + "/dynos/packs/");
+            open_directory(packs_dir_path);
     }
 }
 
 void sdynos_imgui_init() {
     LoadEyesFolder();
 
-    model_list = GetModelList(std::string(sys_exe_path()) + "/dynos/packs");
+    model_list = GetModelList(std::string(sys_user_path()) + "/dynos/packs");
     RefreshColorCodeList();
 
     //model_details = "" + std::to_string(sDynosPacks.Count()) + " model pack";
@@ -277,7 +279,7 @@ void sdynos_imgui_menu() {
             OpenCCSelector();
             // Open File Dialog
             if (ImGui::Button(ICON_FK_FILE_TEXT_O " Open CC Folder...###open_cc_folder"))
-                open_directory(std::string(sys_exe_path()) + "/dynos/colorcodes/");
+                open_directory(std::string(sys_user_path()) + "/dynos/colorcodes/");
         if (!support_color_codes || !current_model.ColorCodeSupport) ImGui::EndDisabled();
 
         // Model Selection
@@ -516,7 +518,7 @@ void sdynos_imgui_menu() {
         ImGui::BeginChild("###model_metadata", ImVec2(0, 45), true, ImGuiWindowFlags_NoScrollbar);
         ImGui::Text(metaLabelText.c_str()); imgui_bundled_tooltip(metaDataText.c_str());
         if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-            open_directory(std::string(sys_exe_path()) + "/" + current_model.FolderPath + "/");
+            open_directory(std::string(sys_user_path()) + "/" + current_model.FolderPath + "/");
         ImGui::TextDisabled(("@ " + current_model.Author).c_str());
         ImGui::EndChild();
         ImGui::PopStyleVar();

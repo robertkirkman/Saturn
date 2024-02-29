@@ -71,7 +71,7 @@ namespace fs = std::filesystem;
 #define SATURN_PROJECT_WALKPOINT_MASK            0x7F
 
 std::string full_file_path(char* filename) {
-    return std::string("dynos/projects/") + filename;
+    return std::string(sys_user_path()) + "/dynos/projects/" + std::string(filename);
 }
 
 void saturn_project_game_handler(SaturnFormatStream* stream, int version) {
@@ -624,7 +624,7 @@ void saturn_load_project_list() {
         // windows moment
         project_dir = "dynos\\projects\\";
     #else
-        project_dir = "dynos/projects/";
+        project_dir = std::string(sys_user_path()) + "/dynos/projects/";
     #endif
 
     if (!fs::exists(project_dir))

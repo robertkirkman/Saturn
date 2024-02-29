@@ -22,7 +22,7 @@ int current_model_id = -1;
 Model current_model;
 Model previous_model;
 
-std::string model_path = "dynos/packs";
+// std::string model_path = "dynos/packs";
 std::vector<Model> model_list;
 
 Array<PackData *> &mDynosPacks = DynOS_Gfx_GetPacks();
@@ -68,8 +68,9 @@ Model LoadModelData(std::string folderPath) {
 
     // Create "res/gfx" if it doesn't exist already
     // This is required for expression loading
-    fs::create_directory("res");
-    fs::create_directory("res/gfx");
+    std::string res_dir_path = std::string(sys_user_path()) + "/res";
+    fs::create_directory(res_dir_path);
+    fs::create_directory(res_dir_path + "/gfx");
 
     if (fs::is_directory(folderPath)) {
         // Model folder exists

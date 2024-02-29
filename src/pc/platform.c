@@ -139,10 +139,6 @@ const char *sys_user_path(void) {
 }
 
 const char *sys_exe_path(void) {
-    if (fs_sys_dir_exists(gCLIOpts.ShareDir)) {
-        return gCLIOpts.ShareDir; // for AppImage
-    }
-
     static char path[SYS_MAX_PATH] = { 0 };
     char *sdlpath = SDL_GetBasePath();
     if (sdlpath && sdlpath[0]) {

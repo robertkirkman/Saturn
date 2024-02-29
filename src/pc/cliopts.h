@@ -13,7 +13,6 @@ struct PCCLIOptions  {
     char SavePath[SYS_MAX_PATH];
     char RomPath[SYS_MAX_PATH];
     char GameDir[SYS_MAX_PATH];
-    char ShareDir[SYS_MAX_PATH];
 };
 
 extern struct PCCLIOptions gCLIOpts;

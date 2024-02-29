@@ -127,7 +127,7 @@ char cli_input[CLI_MAX_INPUT_SIZE];
 #include "saturn/saturn_timelines.h"
 
 void saturn_load_macros() {
-    std::string dir = std::string(sys_exe_path()) + "/dynos/macros/" + current_macro_dir;
+    std::string dir = std::string(sys_user_path()) + "/dynos/macros/" + current_macro_dir;
     macro_array.clear();
     current_macro_id = -1;
     current_macro_dir_count = 1;
@@ -238,7 +238,7 @@ ImGuiDir to_dir(std::string dir) {
 }
 
 void imgui_custom_theme(std::string theme_name) {
-    std::filesystem::path path = std::filesystem::path(std::string(sys_exe_path()) + "/dynos/themes/" + theme_name + ".json");
+    std::filesystem::path path = std::filesystem::path(std::string(sys_user_path()) + "/dynos/themes/" + theme_name + ".json");
     if (!std::filesystem::exists(path)) return;
     std::ifstream file = std::ifstream(path);
     Json::Value json;
@@ -373,7 +373,7 @@ void imgui_update_theme() {
         symbolConfig.SizePixels = 13.0f * SCALE;
         symbolConfig.GlyphMinAdvanceX = 13.0f * SCALE; // Use if you want to make the icon monospaced
         static const ImWchar icon_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
-        std::string fontPath = std::string(sys_exe_path()) + "/fonts/forkawesome-webfont.ttf";
+        std::string fontPath = std::string(sys_user_path()) + "/fonts/forkawesome-webfont.ttf";
         io.Fonts->AddFontFromFileTTF(fontPath.c_str(), symbolConfig.SizePixels, &symbolConfig, icon_ranges);
     }
 
@@ -384,7 +384,7 @@ void imgui_update_theme() {
     else if (configEditorTheme == 3) editor_theme = "moviemaker";
     else if (configEditorTheme == 4) editor_theme = "dear";
     else {
-        for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_exe_path()) + "/dynos/themes")) {
+        for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_user_path()) + "/dynos/themes")) {
             std::filesystem::path path = entry.path();
             if (path.extension().string() != ".json") continue;
             std::string name = path.filename().string();
@@ -423,7 +423,7 @@ void saturn_imgui_init_backend(SDL_Window * sdl_window, SDL_GLContext ctx) {
 }
 
 void saturn_load_themes() {
-    for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_exe_path()) + "/dynos/themes")) {
+    for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_user_path()) + "/dynos/themes")) {
         std::filesystem::path path = entry.path();
         if (path.extension().string() != ".json") continue;
         std::string id = path.filename().string();
@@ -739,7 +739,7 @@ void saturn_imgui_update() {
                     for (int i = 0; i < macro_array.size(); i++) {
                         std::string macro = macro_array[i];
                         bool selected = false;
-                        if (filesystem::is_directory(std::string(sys_exe_path()) + "/dynos/macros/" + current_macro_dir + macro)) {
+                        if (filesystem::is_directory(std::string(sys_user_path()) + "/dynos/macros/" + current_macro_dir + macro)) {
                             if (ImGui::Selectable((std::string(ICON_FK_FOLDER " ") + macro).c_str(), &selected)) {
                                 if (macro == "../") {
                                     current_macro_dir = macro_dir_stack[macro_dir_stack.size() - 1];
@@ -766,7 +766,7 @@ void saturn_imgui_update() {
                     if (current_macro_id == -1) ImGui::BeginDisabled();
                     if (ImGui::Button("Run")) {
                         saturn_cmd_clear_registers();
-                        saturn_cmd_eval_file(std::string(sys_exe_path()) + "/dynos/macros/" + current_macro_dir + macro_array[current_macro_id]);
+                        saturn_cmd_eval_file(std::string(sys_user_path()) + "/dynos/macros/" + current_macro_dir + macro_array[current_macro_id]);
                     }
                     if (current_macro_id == -1) ImGui::EndDisabled();
                     ImGui::SameLine();

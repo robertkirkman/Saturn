@@ -148,10 +148,12 @@ std::vector<Expression> LoadExpressions(std::string modelFolderPath) {
 Expression VanillaEyes;
 /* Loads textures from dynos/eyes/ into a global Expression */
 void LoadEyesFolder() {
+    std::string eyes_dir_path = std::string(sys_user_path()) + "/dynos/eyes/";
+
     // Check if the dynos/eyes/ folder exists
-    if (fs::is_directory(std::string(sys_exe_path()) + "/dynos/eyes")) {
+    if (fs::is_directory(eyes_dir_path)) {
         VanillaEyes.Name = "eyes";
-        VanillaEyes.FolderPath = std::string(sys_exe_path()) + "/dynos/eyes";
+        VanillaEyes.FolderPath = eyes_dir_path;
         VanillaEyes.Textures = LoadExpressionTextures(VanillaEyes.FolderPath, VanillaEyes);
         VanillaEyes.Folders = LoadExpressionFolders(VanillaEyes.FolderPath);
     }

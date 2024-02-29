@@ -233,7 +233,7 @@ void RefreshColorCodeList() {
         model_color_code_list = GetColorCodeList(current_model.FolderPath + "/colorcodes");
     } else {
         color_code_list.clear();
-        color_code_list = GetColorCodeList(std::string(sys_exe_path()) + "dynos/colorcodes");
+        color_code_list = GetColorCodeList(std::string(sys_user_path()) + "/dynos/colorcodes");
     }
 }
 
@@ -309,6 +309,8 @@ void OpenModelCCSelector(Model model, std::vector<std::string> list, std::string
 }
 
 void OpenCCSelector() {
+    std::string colorcodes_dir_path = std::string(sys_user_path()) + "/dynos/colorcodes/";
+    
     ImGui::Text("Color Codes");
     ImGui::SameLine(); imgui_bundled_help_marker(
         "These are GameShark color codes, which overwrite Mario's lights. Place GS files in dynos/colorcodes.");
@@ -358,7 +360,7 @@ void OpenCCSelector() {
             uiCcListId = n + 1;
 
             // Overwrite current color code
-            current_color_code = LoadGSFile(color_code_list[n], std::string(sys_exe_path()) + "/dynos/colorcodes");
+            current_color_code = LoadGSFile(color_code_list[n], colorcodes_dir_path);
             ApplyColorCode(current_color_code);
             if (label_name_lower == "mario") {
                 label_name = "Sample";
@@ -382,7 +384,7 @@ void OpenCCSelector() {
 
                     ImGui::Text("Are you sure you want to delete %s?", label_name.c_str());
                     if (ImGui::Button("Yes")) {
-                        DeleteGSFile(std::string(sys_exe_path()) + "/dynos/colorcodes/" + label_name + ".gs");
+                        DeleteGSFile(colorcodes_dir_path + label_name + ".gs");
                         RefreshColorCodeList();
                         ImGui::CloseCurrentPopup();
                     } ImGui::SameLine();

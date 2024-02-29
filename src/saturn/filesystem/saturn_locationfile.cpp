@@ -8,6 +8,7 @@ extern "C" {
 #include "include/types.h"
 #include "game/area.h"
 #include "game/level_update.h"
+#include "pc/platform.h"
 }
 
 std::map<int, std::map<std::string, std::pair<s16, std::array<float, 3>>>> locations = {};
@@ -44,11 +45,19 @@ void saturn_location_data_handler(SaturnFormatStream* stream, int version) {
     }
 }
 void saturn_load_locations() {
-    saturn_format_input("dynos/locations.bin", "STLC", {
+    char locations_path[SYS_MAX_PATH] = "";
+    strncat(locations_path,  sys_user_path(), SYS_MAX_PATH);
+    strncat(locations_path, "/dynos/locations.bin", SYS_MAX_PATH);
+    
+    saturn_format_input(locations_path, "STLC", {
         { "DATA", saturn_location_data_handler }
     });
 }
 void saturn_save_locations() {
+    char locations_path[SYS_MAX_PATH] = "";
+    strncat(locations_path,  sys_user_path(), SYS_MAX_PATH);
+    strncat(locations_path, "/dynos/locations.bin", SYS_MAX_PATH);
+
     SaturnFormatStream stream = saturn_format_output("STLC", 1);
     saturn_format_new_section(&stream, "DATA");
     int count = 0;
@@ -69,7 +78,7 @@ void saturn_save_locations() {
         }
     }
     saturn_format_close_section(&stream);
-    saturn_format_write("dynos/locations.bin", &stream);
+    saturn_format_write(locations_path, &stream);
 }
 std::map<std::string, std::pair<s16, std::array<float, 3>>>* saturn_get_locations() {
     int level = (gCurrLevelNum << 8) | gCurrAreaIndex;
