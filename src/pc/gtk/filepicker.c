@@ -3,7 +3,7 @@
 #include "../platform.h"
 #include "../cliopts.h"
 
-static GtkApplication *app;
+static GtkWidget *gFileDialogParentWindow;
 
 // callback which sets the ROM path to the chosen file's path
 static void open_dialog_callback(GObject *source_object, GAsyncResult *res) {
@@ -28,19 +28,19 @@ static void open_dialog_callback(GObject *source_object, GAsyncResult *res) {
         g_clear_error(&err);
     }
     // terminate the GTK GUI so that the Saturn GUI can take over
-    g_application_quit(G_APPLICATION(app));
+    gtk_window_close(gFileDialogParentWindow);
 }
 
 // spawn an invisible toplevel GTK window which seems to be required for
 // g_application_run() to successfully block execution, then spawn the GTK
 // file picker prefab.
 static void launch_gtk_gui(GtkApplication *app) {
-    GtkWidget *window = gtk_application_window_new(app);
+    gFileDialogParentWindow = gtk_application_window_new(app);
     GtkFileDialog *dialog = gtk_file_dialog_new();
 
     gtk_file_dialog_set_title(dialog, "Select ROM");
-    gtk_file_dialog_open(dialog, GTK_WINDOW(window), NULL, open_dialog_callback, NULL);
-
+    gtk_file_dialog_open(dialog, GTK_WINDOW(gFileDialogParentWindow), NULL, open_dialog_callback, NULL);
+    // gtk_window_present(gFileDialogParentWindow); // will make parent window visible
     g_object_unref(dialog);
 }
 
@@ -48,7 +48,7 @@ static void launch_gtk_gui(GtkApplication *app) {
 int open_file_picker(void) {
     int status;
 
-    app = gtk_application_new("com.Llennpie.Saturn", G_APPLICATION_DEFAULT_FLAGS);
+    GtkApplication *app = gtk_application_new("com.Llennpie.Saturn", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(launch_gtk_gui), NULL);
     status = g_application_run(G_APPLICATION(app), 0, NULL);
     g_object_unref(app);
