@@ -148,7 +148,7 @@ std::vector<Expression> LoadExpressions(std::string modelFolderPath) {
 Expression VanillaEyes;
 /* Loads textures from dynos/eyes/ into a global Expression */
 void LoadEyesFolder() {
-    std::string eyes_dir_path = std::string(sys_user_path()) + "/dynos/eyes/";
+    fs::path eyes_dir_path = fs::path(std::string(sys_user_path()) + "/dynos/eyes/");
 
     // Check if the dynos/eyes/ folder exists
     if (fs::is_directory(eyes_dir_path)) {
@@ -353,6 +353,6 @@ void saturn_delete_file(string file) {
     remove(file.c_str());
 }
 
-std::size_t number_of_files_in_directory(std::filesystem::path path) {
+std::size_t number_of_files_in_directory(fs::path path) {
     return (std::size_t)std::distance(std::filesystem::directory_iterator{path}, std::filesystem::directory_iterator{});
 }

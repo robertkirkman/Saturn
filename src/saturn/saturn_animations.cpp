@@ -261,7 +261,7 @@ void saturn_load_anim_folder(string path, int* index) {
     canim_array.clear();
 
     // For AppImage
-    std::string original_anim_dir_path = std::string(sys_user_path()) + "/dynos/anims/";
+    fs::path original_anim_dir_path = fs::path(std::string(sys_user_path()) + "/dynos/anims/");
 
     // If anim folder is misplaced
     if (!fs::exists(original_anim_dir_path))

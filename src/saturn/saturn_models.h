@@ -21,7 +21,7 @@ class Model {
         int DynOSId = -1;
 
         std::string FolderName = "Mario";
-        std::string FolderPath = std::string(sys_user_path());
+        std::string FolderPath;
 
         // Metadata
         std::string Name;

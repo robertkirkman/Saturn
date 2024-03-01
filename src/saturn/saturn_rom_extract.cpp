@@ -332,13 +332,6 @@ int copy_custom_assets(void) {
     const char *appdir_cstr = std::getenv("APPDIR");
     const char *exe_path_cstr = sys_exe_path();
     const char *user_path_cstr = sys_user_path();
-
-    if ((exe_path_cstr == NULL && appdir_cstr == NULL) || user_path_cstr == NULL) {
-
-        pfd::message("Failed to copy custom assets", "Failed to locate requred directories!");
-        return 4;
-    }
-
     std::string srcdir, destdir = std::string(user_path_cstr);
 
     // This affects non-AppImage builds also which means that if I leave it this way,

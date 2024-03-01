@@ -11,13 +11,21 @@
 #include <filesystem>
 #include <iostream>
 
+extern "C" {
+#include "pc/platform.h"
+}
+
 class TexturePath {
 public:
     std::string FileName;
     std::string FilePath;
     /* Relative path from res/gfx, as used by EXTERNAL_DATA */
+    // For AppImages etc, I changed FilePath to be an absolute path, so now
+    // this has to be properly a conversion from absolute to relative path
     std::string GetRelativePath() {
-        return "../../" + this->FilePath;//.substr(0, this->FilePath.size() - 4);
+        // return "../../" + this->FilePath;//.substr(0, this->FilePath.size() - 4);
+        return std::filesystem::relative(std::filesystem::path(this->FilePath),
+               std::filesystem::path(std::string(sys_user_path()) + "/res/gfx")).generic_string();
     }
     /* Parent directory, used for subfolders */
     std::string ParentPath() {

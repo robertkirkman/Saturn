@@ -70,7 +70,7 @@ Model LoadModelData(std::string folderPath) {
     // This is required for expression loading
     std::string res_dir_path = std::string(sys_user_path()) + "/res";
     fs::create_directory(res_dir_path);
-    fs::create_directory(res_dir_path + "/gfx");
+    fs::create_directory(fs::path(res_dir_path + "/gfx"));
 
     if (fs::is_directory(folderPath)) {
         // Model folder exists
