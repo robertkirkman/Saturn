@@ -153,7 +153,7 @@ void LoadEyesFolder() {
     // Check if the dynos/eyes/ folder exists
     if (fs::is_directory(eyes_dir_path)) {
         VanillaEyes.Name = "eyes";
-        VanillaEyes.FolderPath = eyes_dir_path;
+        VanillaEyes.FolderPath = eyes_dir_path.string();
         VanillaEyes.Textures = LoadExpressionTextures(VanillaEyes.FolderPath, VanillaEyes);
         VanillaEyes.Folders = LoadExpressionFolders(VanillaEyes.FolderPath);
     }
