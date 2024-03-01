@@ -3,11 +3,8 @@
 #include "../platform.h"
 #include "../cliopts.h"
 
-static GtkWidget *sFileDialogParentWindow;
-static GtkApplication *sFileDialogParentApp;
-
 // callback which sets the ROM path to the chosen file's path
-static void open_dialog_callback(GObject *source_object, GAsyncResult *res) {
+static void open_dialog_callback(GObject *source_object, GAsyncResult *res, GtkWidget *parent) {
     GtkFileDialog *dialog = GTK_FILE_DIALOG(source_object);
     GFile *file;
     GtkAlertDialog *alert_dialog;
@@ -28,29 +25,30 @@ static void open_dialog_callback(GObject *source_object, GAsyncResult *res) {
         }
         g_clear_error(&err);
     }
-    // terminate the GTK GUI so that the Saturn GUI can take over
-    gtk_window_close(sFileDialogParentWindow);
-    g_application_quit(G_APPLICATION(sFileDialogParentApp));
+
+    // close the parent window so the Saturn GUI can take over. 
+    // gtk_window_close() did not work here when gtk_window_present() is commented out!!!
+    gtk_window_destroy(GTK_WINDOW(parent));
 }
 
 // spawn an invisible toplevel GTK window which seems to be required for
 // g_application_run() to successfully block execution, then spawn the GTK
 // file picker prefab.
 static void launch_gtk_gui(GtkApplication *app) {
-    sFileDialogParentWindow = gtk_application_window_new(app);
+    GtkWidget *sFileDialogParentWindow = gtk_application_window_new(app);
     GtkFileDialog *dialog = gtk_file_dialog_new();
 
     gtk_file_dialog_set_title(dialog, "Select ROM");
-    gtk_file_dialog_open(dialog, GTK_WINDOW(sFileDialogParentWindow), NULL, open_dialog_callback, NULL);
-    // gtk_window_present(gFileDialogParentWindow); // will make parent window visible
-
+    gtk_file_dialog_open(dialog, GTK_WINDOW(sFileDialogParentWindow), NULL, (GAsyncReadyCallback)open_dialog_callback, sFileDialogParentWindow);
+    // gtk_window_present(GTK_WINDOW(sFileDialogParentWindow)); // will make parent window visible
+    g_object_unref(dialog);
 }
 
 // entrypoint to spawn the file picker GUI and block execution until return
 int open_file_picker(void) {
     int status;
 
-    sFileDialogParentApp = gtk_application_new("com.Llennpie.Saturn", G_APPLICATION_DEFAULT_FLAGS);
+    GtkApplication *sFileDialogParentApp = gtk_application_new("com.Llennpie.Saturn", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(sFileDialogParentApp, "activate", G_CALLBACK(launch_gtk_gui), NULL);
     status = g_application_run(G_APPLICATION(sFileDialogParentApp), 0, NULL);
     g_object_unref(sFileDialogParentApp);
