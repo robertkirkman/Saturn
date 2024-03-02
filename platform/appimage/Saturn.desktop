@@ -5,6 +5,6 @@ Name=Saturn
 Comment=An all-in-one machinima studio for Super Mario 64, based on the PC port
 Path=usr/bin
 Exec=saturn.us.f3dex2e
-Icon=Saturn
+Icon=saturn-linuxicon
 Terminal=false
 Categories=Game;Graphics;Development;AudioVideo;
