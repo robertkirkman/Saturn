@@ -52,11 +52,9 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4.1.4
       - name: Upload AppImage to release
-        uses: termux/upload-release-action@v4.1.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "**/*.AppImage"
-          file_glob: true
-          release_name:
-          tag: ${{ github.event.release.tag_name }}
+          file: Saturn-x86_64.AppImage
+          tag: {{ github.ref }}
           checksums: sha256, sha512, md5
