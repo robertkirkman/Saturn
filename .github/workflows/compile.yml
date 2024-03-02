@@ -84,7 +84,7 @@ jobs:
         mkdir -p AppDir/usr/lib/
         cp /usr/lib64/libthai* AppDir/usr/lib/
     - name: Generate AppImage
-      run: NO_STRIP=true squashfs-root/AppRun --icon-file platform/appimage/Saturn.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
+      run: NO_STRIP=true squashfs-root/AppRun --icon-file res/saturn-linuxicon.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
       uses: actions/upload-artifact@v4.3.1
       with:
