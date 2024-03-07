@@ -8,7 +8,6 @@
 #ifdef __cplusplus
 #include <string>
 #include <vector>
-#include <filesystem>
 #include <iostream>
 
 extern "C" {
@@ -24,8 +23,8 @@ public:
     // this has to be properly a conversion from absolute to relative path
     std::string GetRelativePath() {
         // return "../../" + this->FilePath;//.substr(0, this->FilePath.size() - 4);
-        return std::filesystem::relative(std::filesystem::path(this->FilePath),
-               std::filesystem::path(std::string(sys_user_path()) + "/res/gfx")).generic_string();
+        return fs::relative(fs::path(this->FilePath),
+               fs::path(std::string(sys_user_path()) + "/res/gfx")).generic_string();
     }
     /* Parent directory, used for subfolders */
     std::string ParentPath() {
@@ -69,7 +68,7 @@ std::vector<Expression> LoadExpressions(std::string);
 
 void saturn_copy_file(std::string from, std::string to);
 void saturn_delete_file(std::string file);
-std::size_t number_of_files_in_directory(std::filesystem::path path);
+std::size_t number_of_files_in_directory(fs::path path);
 
 extern bool show_vmario_emblem;
 

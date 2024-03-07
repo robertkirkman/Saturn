@@ -2,7 +2,6 @@
 #include "saturn_assets.h"
 #include "saturn.h"
 
-#include <filesystem>
 #include <utility>
 #include <vector>
 #include <string>
@@ -46,7 +45,7 @@ std::map<std::string, FormatTableEntry> format_table = {
     { "i8",     (FormatTableEntry){ FMT_I,    8  } }
 };
 
-#define EXTRACT_PATH std::filesystem::path(sys_user_path()) / "res"
+#define EXTRACT_PATH fs::path(sys_user_path()) / "res"
 
 struct mio0_header {
     unsigned int dest_size;
@@ -233,10 +232,10 @@ unsigned char* raw2skybox(unsigned char* raw, int len, int use_bitfs) {
 #undef CONST
 
 void write_png(std::string path, void* data, int width, int height, int depth) {
-    std::filesystem::path dst = EXTRACT_PATH / path;
-    std::filesystem::create_directories(dst.parent_path());
+    fs::path dst = EXTRACT_PATH / path;
+    fs::create_directories(dst.parent_path());
     std::cout << "exporting " << dst << std::endl;
-    pngutils_write_png(std::filesystem::absolute(dst).u8string().c_str(), width, height, depth, data, 0);
+    pngutils_write_png(fs::absolute(dst).u8string().c_str(), width, height, depth, data, 0);
 }
 
 void skybox2png(std::string filename, unsigned char* img) {
@@ -273,7 +272,7 @@ unsigned char* file_processor_apply(unsigned char* data, std::pair<int, unsigned
 #define TEXTYPE_FONT       1
 #define TEXTYPE_TRANSITION 2
 
-int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::string>* todo, int type) {
+int saturn_rom_status(fs::path extract_dest, std::vector<std::string>* todo, int type) {
     bool needs_extract = false;
     bool needs_rom = false;
     for (const auto& entry : assets) {
@@ -287,12 +286,12 @@ int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::strin
         if (textype == TEXTYPE_TRANSITION && (entry.metadata.size() != 0) && !(type & EXTRACT_TYPE_TRANSITION)) continue;
         if (entry.metadata.size() > 0 && entry.metadata[0] == -1) {
             bool missing = false;
-            std::filesystem::path path = extract_dest / entry.path;
+            fs::path path = extract_dest / entry.path;
             std::string filename = path.string();
             std::string ext = path.extension().string();
             std::string name_without_ext = filename.substr(0, filename.length() - ext.length());
             for (int i = 0; i < 80; i++) {
-                if (!std::filesystem::exists(name_without_ext + "." + std::to_string(i) + ".rgba16.png")) missing = true;
+                if (!fs::exists(name_without_ext + "." + std::to_string(i) + ".rgba16.png")) missing = true;
             }
             if (missing) {
                 needs_extract = true;
@@ -300,7 +299,7 @@ int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::strin
             }
             continue;
         }
-        if (!std::filesystem::exists(extract_dest / entry.path)) {
+        if (!fs::exists(extract_dest / entry.path)) {
             needs_extract = true;
             if (todo != nullptr) todo->push_back(entry.path);
         }
@@ -308,18 +307,18 @@ int saturn_rom_status(std::filesystem::path extract_dest, std::vector<std::strin
     needs_rom = needs_extract;
     if (type & EXTRACT_TYPE_SATURN) {
         for (const auto& entry : saturn_assets) {
-            if (!std::filesystem::exists(extract_dest / entry.path)) {
+            if (!fs::exists(extract_dest / entry.path)) {
                 needs_extract = true;
                 if (todo != nullptr) todo->push_back(entry.path);
             }
         }
     }
     if (!needs_extract) return ROM_OK;
-    if (needs_rom && !std::filesystem::exists(gCLIOpts.RomPath)) {
+    if (needs_rom && !fs::exists(gCLIOpts.RomPath)) {
 #ifdef FILE_PICKER
         open_file_picker();
 #endif
-        if (!std::filesystem::exists(gCLIOpts.RomPath)) return ROM_MISSING;
+        if (!fs::exists(gCLIOpts.RomPath)) return ROM_MISSING;
     }
     return ROM_NEED_EXTRACT;
 }
@@ -342,7 +341,7 @@ int copy_custom_assets(void) {
     else {
         srcdir = std::string(appdir_cstr) + "/custom_assets/";
     }
-    if (!std::filesystem::exists(srcdir)) {
+    if (!fs::exists(srcdir)) {
         pfd::message("Failed to copy custom assets", "Failed to detect required custom asset files for Saturn!");
         return 5;
     }
@@ -356,10 +355,10 @@ int copy_custom_assets(void) {
     // eventually I had to edit it to add more names, and others actually became 
     // confused when they tried to add files to the build and couldn't find the whitelist.
     try {
-        std::filesystem::copy(std::filesystem::path(srcdir),
-                              std::filesystem::path(sys_user_path()),
-                              std::filesystem::copy_options::overwrite_existing |
-                              std::filesystem::copy_options::recursive);
+        fs::copy(fs::path(srcdir),
+                              fs::path(sys_user_path()),
+                              fs::copy_options::overwrite_existing |
+                              fs::copy_options::recursive);
     }
     catch (std::exception& e) {
         pfd::message("Failed to copy custom assets", "Failed to copy required custom asset files for Saturn!");
@@ -371,7 +370,7 @@ int copy_custom_assets(void) {
 }
 
 int saturn_extract_rom(int type) {
-    std::filesystem::path extract_dest = EXTRACT_PATH;
+    fs::path extract_dest = EXTRACT_PATH;
     std::vector<std::string> todo = {};
     int status = saturn_rom_status(extract_dest, &todo, type);
 
@@ -429,8 +428,8 @@ int saturn_extract_rom(int type) {
             }
         }
         else {
-            std::filesystem::path dst = EXTRACT_PATH / asset.path;
-            std::filesystem::create_directories(dst.parent_path());
+            fs::path dst = EXTRACT_PATH / asset.path;
+            fs::create_directories(dst.parent_path());
             std::cout << "exporting " << dst << std::endl;
             unsigned char* out_data;
             int data_len;

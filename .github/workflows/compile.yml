@@ -1,11 +1,15 @@
 name: Compile
 
 on:
+  release:
+    types:
+      - published
   push:
     branches: [ "appimage" ]
 
 jobs:
   windows:
+    if: github.event_name == 'push'
     name: Windows (MSYS2)
 
     runs-on: windows-latest
@@ -32,6 +36,7 @@ jobs:
         path: D:\a\Saturn\Saturn\build\us_pc\
 
   linux:
+    if: github.event_name == 'push'
     name: Linux
 
     runs-on: ubuntu-latest
@@ -54,21 +59,17 @@ jobs:
         path: /home/runner/work/Saturn/Saturn/build/us_pc
 
   linux-appimage:
-    name: Linux (AppImage) (glibc 2.37) (x86_64)
+    name: Linux (AppImage) (glibc 2.28) (x86_64)
     runs-on: ubuntu-latest
-    container: fedora:38
+    container: docker
     steps:
-    - uses: actions/checkout@v4.1.1
-    - name: Fetch Dependencies from Fedora
+    - uses: actions/checkout@v3
+    - name: Build Saturn AppImage builder image
       run: |
-        sudo dnf install -y wget make git gcc g++ python3 glew-devel SDL2-devel curl libcurl-devel jsoncpp-devel gtk4-devel
-    - name: Install linuxdeploy
-      run: |
-        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-        chmod +x linuxdeploy-x86_64.AppImage
-        ./linuxdeploy-x86_64.AppImage --appimage-extract
-    - name: Build Saturn
-      run: FILE_PICKER=1 DISCORDGAMESDK=0 DISCORDRPC=0 DISCORD_SDK=0 make -j$(nproc)
+        cd platform/appimage/
+        docker build . -t Saturn-appimage-builder
+    - name: Build Saturn in builder image
+      run: docker run -e FILE_PICKER=1 -e DISCORDGAMESDK=0 -e DISCORDRPC=0 -e DISCORD_SDK=0 -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder make -j$(nproc)
     - name: Install Saturn to AppDir
       run: |
         cd build/us_pc
@@ -82,11 +83,29 @@ jobs:
     - name: Install additional necessary libraries to AppDir
       run: |
         mkdir -p AppDir/usr/lib/
-        cp /usr/lib64/libthai* AppDir/usr/lib/
-    - name: Generate AppImage
-      run: NO_STRIP=true squashfs-root/AppRun --icon-file res/saturn-linuxicon.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
+        docker run -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder cp /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 AppDir/usr/lib/
+        docker run -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder cp /usr/lib/x86_64-linux-gnu/libthai.so.0 AppDir/usr/lib/
+    - name: Build Saturn AppImage in builder image
+      run: docker run -e NO_STRIP='true' -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder /squashfs-root/AppRun --plugin gtk --icon-file res/saturn-linuxicon.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
       uses: actions/upload-artifact@v4.3.1
       with:
         name: saturn-${{ github.run_number }}-${{ github.job }}
         path: 'Saturn-x86_64.AppImage'
+
+  upload-appimage:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    needs: linux-appimage
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4.1.4
+      - name: Upload AppImage to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "**/Saturn-x86_64.AppImage"
+          file_glob: true
+          tag: ${{ github.ref }}

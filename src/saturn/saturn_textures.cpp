@@ -30,12 +30,10 @@ extern "C" {
 
 using namespace std;
 #include <dirent.h>
-#include <filesystem>
 #include <fstream>
 #include <algorithm>
 #include <assert.h>
 #include <stdlib.h>
-namespace fs = std::filesystem;
 #include "pc/fs/fs.h"
 
 #include "saturn/saturn_json.h"
@@ -354,5 +352,5 @@ void saturn_delete_file(string file) {
 }
 
 std::size_t number_of_files_in_directory(fs::path path) {
-    return (std::size_t)std::distance(std::filesystem::directory_iterator{path}, std::filesystem::directory_iterator{});
+    return (std::size_t)std::distance(fs::directory_iterator{path}, fs::directory_iterator{});
 }

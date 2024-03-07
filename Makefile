@@ -615,11 +615,6 @@ else
 
 endif
 
-
-# Saturn Enable filesystem library and C++17
-CXXFLAGS := -std=c++17
-LDFLAGS += -lstdc++fs
-
 CC_CHECK += -DGIT_HASH=\"$(GIT_HASH)\"
 CFLAGS   += -DGIT_HASH=\"$(GIT_HASH)\"
 
@@ -742,6 +737,9 @@ else
 endif # End of LDFLAGS
 
 LDFLAGS += -lstdc++
+# Saturn Enable filesystem library and C++17
+CXXFLAGS := -std=c++17
+LDFLAGS += -lstdc++fs
 
 # icon
 ifeq ($(WINDOWS_BUILD),1)

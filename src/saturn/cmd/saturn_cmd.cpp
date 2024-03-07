@@ -7,7 +7,6 @@
 #include <optional>
 #include <vector>
 #include <cstring>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <cstdarg>
@@ -170,7 +169,7 @@ void saturn_cmd_eval_file(std::string path) {
     std::ifstream file = std::ifstream(path);
     if (!file.good()) return;
     is_cli = false;
-    int size = std::filesystem::file_size(path);
+    int size = fs::file_size(path);
     if (size == 0) return;
     char* data = (char*)malloc(size + 1);
     data[size] = 0;

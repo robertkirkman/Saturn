@@ -187,6 +187,15 @@ extern "C" {
     s32 saturn_begin_extract_rom_thread();
 #ifdef __cplusplus
 }
+
+/* Test for GCC <= 8.3.0 */
+#if __GNUC__ < 8 || (__GNUC__ == 8 && (__GNUC_MINOR__ < 3 || __GNUC_MINOR__ == 3 && __GNUC_PATCHLEVEL__  == 0))
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#else
+#include <filesystem>
+namespace fs = std::filesystem;
+#endif
 #endif
 
 #endif

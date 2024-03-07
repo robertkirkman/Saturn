@@ -26,11 +26,9 @@ extern "C" {
 
 using namespace std;
 #include <dirent.h>
-#include <filesystem>
 #include <fstream>
 #include <assert.h>
 #include <stdlib.h>
-namespace fs = std::filesystem;
 #include "pc/fs/fs.h"
 
 #include "saturn/saturn_json.h"

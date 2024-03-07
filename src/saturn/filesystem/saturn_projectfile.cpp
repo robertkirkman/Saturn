@@ -31,11 +31,9 @@ extern "C" {
 }
 
 #include <dirent.h>
-#include <filesystem>
 #include <assert.h>
 #include <stdlib.h>
 #include <array>
-namespace fs = std::filesystem;
 #include "pc/fs/fs.h"
 
 #include "saturn/saturn_timelines.h"

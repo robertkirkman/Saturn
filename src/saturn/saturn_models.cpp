@@ -11,9 +11,7 @@
 #include "saturn/saturn_colors.h"
 #include "saturn/saturn_json.h"
 
-#include <filesystem>
 #include <fstream>
-namespace fs = std::filesystem;
 #include "pc/fs/fs.h"
 
 #include "data/dynos.cpp.h"

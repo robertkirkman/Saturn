@@ -3,7 +3,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 
 #include "saturn/libs/imgui/imgui.h"
 #include "saturn/libs/imgui/imgui_internal.h"
@@ -163,14 +162,14 @@ void ssettings_imgui_update() {
     ImGui::Checkbox(ICON_FK_DISCORD " Discord Activity Status", &configDiscordRPC);
     imgui_bundled_tooltip("Enables/disables Discord Rich Presence. Requires restart.");
 #endif
-    std::filesystem::path no_updates_file = std::filesystem::path(sys_user_path()) / "no_updates";
-    bool pauseUpdates = std::filesystem::exists(no_updates_file);
+    fs::path no_updates_file = fs::path(sys_user_path()) / "no_updates";
+    bool pauseUpdates = fs::exists(no_updates_file);
     if (ImGui::Checkbox("Pause Updates", &pauseUpdates)) {
         if (pauseUpdates) {
             std::ofstream stream = std::ofstream(no_updates_file);
             stream.close();
         }
-        else std::filesystem::remove(no_updates_file);
+        else fs::remove(no_updates_file);
     }
 
     ImGui::SetNextItemOpen(true, ImGuiCond_FirstUseEver);

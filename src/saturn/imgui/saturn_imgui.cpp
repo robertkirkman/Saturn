@@ -133,13 +133,13 @@ void saturn_load_macros() {
     current_macro_dir_count = 1;
     if (current_macro_dir != "") macro_array.push_back("../");
     else current_macro_dir_count = 0;
-    for (auto& entry : filesystem::directory_iterator(dir)) {
-        if (!filesystem::is_directory(entry)) continue;
+    for (auto& entry : fs::directory_iterator(dir)) {
+        if (!fs::is_directory(entry)) continue;
         macro_array.push_back(entry.path().filename().u8string() + "/");
         current_macro_dir_count++;
     }
-    for (auto& entry : filesystem::directory_iterator(dir)) {
-        if (filesystem::is_directory(entry)) continue;
+    for (auto& entry : fs::directory_iterator(dir)) {
+        if (fs::is_directory(entry)) continue;
         if (entry.path().extension().u8string() == ".stm")
             macro_array.push_back(entry.path().filename().u8string());
     }
@@ -238,8 +238,8 @@ ImGuiDir to_dir(std::string dir) {
 }
 
 void imgui_custom_theme(std::string theme_name) {
-    std::filesystem::path path = std::filesystem::path(std::string(sys_user_path()) + "/dynos/themes/" + theme_name + ".json");
-    if (!std::filesystem::exists(path)) return;
+    fs::path path = fs::path(std::string(sys_user_path()) + "/dynos/themes/" + theme_name + ".json");
+    if (!fs::exists(path)) return;
     std::ifstream file = std::ifstream(path);
     Json::Value json;
     json << file;
@@ -384,8 +384,8 @@ void imgui_update_theme() {
     else if (configEditorTheme == 3) editor_theme = "moviemaker";
     else if (configEditorTheme == 4) editor_theme = "dear";
     else {
-        for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_user_path()) + "/dynos/themes")) {
-            std::filesystem::path path = entry.path();
+        for (const auto& entry : fs::directory_iterator(std::string(sys_user_path()) + "/dynos/themes")) {
+            fs::path path = entry.path();
             if (path.extension().string() != ".json") continue;
             std::string name = path.filename().string();
             name = name.substr(0, name.length() - 5);
@@ -423,8 +423,8 @@ void saturn_imgui_init_backend(SDL_Window * sdl_window, SDL_GLContext ctx) {
 }
 
 void saturn_load_themes() {
-    for (const auto& entry : std::filesystem::directory_iterator(std::string(sys_user_path()) + "/dynos/themes")) {
-        std::filesystem::path path = entry.path();
+    for (const auto& entry : fs::directory_iterator(std::string(sys_user_path()) + "/dynos/themes")) {
+        fs::path path = entry.path();
         if (path.extension().string() != ".json") continue;
         std::string id = path.filename().string();
         id = id.substr(0, id.length() - 5);
@@ -739,7 +739,7 @@ void saturn_imgui_update() {
                     for (int i = 0; i < macro_array.size(); i++) {
                         std::string macro = macro_array[i];
                         bool selected = false;
-                        if (filesystem::is_directory(std::string(sys_user_path()) + "/dynos/macros/" + current_macro_dir + macro)) {
+                        if (fs::is_directory(std::string(sys_user_path()) + "/dynos/macros/" + current_macro_dir + macro)) {
                             if (ImGui::Selectable((std::string(ICON_FK_FOLDER " ") + macro).c_str(), &selected)) {
                                 if (macro == "../") {
                                     current_macro_dir = macro_dir_stack[macro_dir_stack.size() - 1];
