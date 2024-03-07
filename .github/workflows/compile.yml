@@ -67,9 +67,9 @@ jobs:
     - name: Build Saturn AppImage builder image
       run: |
         cd platform/appimage/
-        docker build . -t Saturn-appimage-builder
+        docker build . -t saturn-appimage-builder
     - name: Build Saturn in builder image
-      run: docker run -e FILE_PICKER=1 -e DISCORDGAMESDK=0 -e DISCORDRPC=0 -e DISCORD_SDK=0 -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder make -j$(nproc)
+      run: docker run -e FILE_PICKER=1 -e DISCORDGAMESDK=0 -e DISCORDRPC=0 -e DISCORD_SDK=0 -v ${{ github.workspace }}:/Saturn saturn-appimage-builder make -j$(nproc)
     - name: Install Saturn to AppDir
       run: |
         cd build/us_pc
@@ -83,10 +83,10 @@ jobs:
     - name: Install additional necessary libraries to AppDir
       run: |
         mkdir -p AppDir/usr/lib/
-        docker run -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder cp /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 AppDir/usr/lib/
-        docker run -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder cp /usr/lib/x86_64-linux-gnu/libthai.so.0 AppDir/usr/lib/
+        docker run -v ${{ github.workspace }}:/Saturn saturn-appimage-builder cp /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 AppDir/usr/lib/
+        docker run -v ${{ github.workspace }}:/Saturn saturn-appimage-builder cp /usr/lib/x86_64-linux-gnu/libthai.so.0 AppDir/usr/lib/
     - name: Build Saturn AppImage in builder image
-      run: docker run -e NO_STRIP='true' -v ${{ github.workspace }}:/Saturn Saturn-appimage-builder /squashfs-root/AppRun --plugin gtk --icon-file res/saturn-linuxicon.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
+      run: docker run -e NO_STRIP='true' -v ${{ github.workspace }}:/Saturn saturn-appimage-builder /squashfs-root/AppRun --plugin gtk --icon-file res/saturn-linuxicon.png --desktop-file platform/appimage/Saturn.desktop --appdir AppDir --output appimage
     - name: Upload Artifact
       uses: actions/upload-artifact@v4.3.1
       with:

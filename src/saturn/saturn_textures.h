@@ -10,6 +10,11 @@
 #include <vector>
 #include <iostream>
 
+// some kind of a thing for GCC 8.3.0
+#include "saturn.h"
+#include <filesystem>
+namespace fs2 = std::filesystem;
+
 extern "C" {
 #include "pc/platform.h"
 }
@@ -23,8 +28,8 @@ public:
     // this has to be properly a conversion from absolute to relative path
     std::string GetRelativePath() {
         // return "../../" + this->FilePath;//.substr(0, this->FilePath.size() - 4);
-        return fs::relative(fs::path(this->FilePath),
-               fs::path(std::string(sys_user_path()) + "/res/gfx")).generic_string();
+        return fs2::relative(fs2::path(this->FilePath),
+               fs2::path(std::string(sys_user_path()) + "/res/gfx")).generic_string();
     }
     /* Parent directory, used for subfolders */
     std::string ParentPath() {
