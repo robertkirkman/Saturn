@@ -27,8 +27,8 @@ void saturn_cmd_alias_data_handler(SaturnFormatStream* stream, int version) {
 
 void saturn_cmd_registers_load() {
     char command_data_path[SYS_MAX_PATH] = "";
-    strncat(command_data_path,  sys_user_path(), SYS_MAX_PATH);
-    strncat(command_data_path, "/dynos/command_data.bin", SYS_MAX_PATH);
+    strncat(command_data_path,  sys_user_path(), SYS_MAX_PATH - 1);
+    strncat(command_data_path, "/dynos/command_data.bin", SYS_MAX_PATH - 1);
 
     aliases.clear();
     saturn_format_input(command_data_path, "SCMD", {
@@ -39,8 +39,8 @@ void saturn_cmd_registers_load() {
 
 void saturn_cmd_registers_save() {
     char command_data_path[SYS_MAX_PATH] = "";
-    strncat(command_data_path,  sys_user_path(), SYS_MAX_PATH);
-    strncat(command_data_path, "/dynos/command_data.bin", SYS_MAX_PATH);
+    strncat(command_data_path,  sys_user_path(), SYS_MAX_PATH - 1);
+    strncat(command_data_path, "/dynos/command_data.bin", SYS_MAX_PATH - 1);
 
     SaturnFormatStream stream = saturn_format_output("SCMD", curr_ver);
     saturn_format_new_section(&stream, "REGI");

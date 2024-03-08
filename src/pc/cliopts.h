@@ -5,6 +5,7 @@
 
 struct PCCLIOptions  {
     unsigned int SkipIntro;
+    unsigned int SkipGreeter;
     unsigned int FullScreen;
     unsigned int PoolSize;
     unsigned int SyncFrames;

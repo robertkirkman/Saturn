@@ -46,8 +46,8 @@ void saturn_location_data_handler(SaturnFormatStream* stream, int version) {
 }
 void saturn_load_locations() {
     char locations_path[SYS_MAX_PATH] = "";
-    strncat(locations_path,  sys_user_path(), SYS_MAX_PATH);
-    strncat(locations_path, "/dynos/locations.bin", SYS_MAX_PATH);
+    strncat(locations_path,  sys_user_path(), SYS_MAX_PATH - 1);
+    strncat(locations_path, "/dynos/locations.bin", SYS_MAX_PATH - 1);
     
     saturn_format_input(locations_path, "STLC", {
         { "DATA", saturn_location_data_handler }
@@ -55,8 +55,8 @@ void saturn_load_locations() {
 }
 void saturn_save_locations() {
     char locations_path[SYS_MAX_PATH] = "";
-    strncat(locations_path,  sys_user_path(), SYS_MAX_PATH);
-    strncat(locations_path, "/dynos/locations.bin", SYS_MAX_PATH);
+    strncat(locations_path,  sys_user_path(), SYS_MAX_PATH - 1);
+    strncat(locations_path, "/dynos/locations.bin", SYS_MAX_PATH - 1);
 
     SaturnFormatStream stream = saturn_format_output("STLC", 1);
     saturn_format_new_section(&stream, "DATA");

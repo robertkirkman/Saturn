@@ -20,8 +20,8 @@ void saturn_favorite_anim_data_handler(SaturnFormatStream* stream, int version) 
 
 void saturn_load_favorite_anims() {
     char anim_favorites_path[SYS_MAX_PATH] = "";
-    strncat(anim_favorites_path,  sys_user_path(), SYS_MAX_PATH);
-    strncat(anim_favorites_path, "/dynos/anim_favorites.bin", SYS_MAX_PATH);
+    strncat(anim_favorites_path,  sys_user_path(), SYS_MAX_PATH - 1);
+    strncat(anim_favorites_path, "/dynos/anim_favorites.bin", SYS_MAX_PATH - 1);
 
     favorite_anims.clear();
     saturn_format_input(anim_favorites_path, "STFA", {
@@ -31,8 +31,8 @@ void saturn_load_favorite_anims() {
 
 void saturn_save_favorite_anims() {
     char anim_favorites_path[SYS_MAX_PATH] = "";
-    strncat(anim_favorites_path,  sys_user_path(), SYS_MAX_PATH);
-    strncat(anim_favorites_path, "/dynos/anim_favorites.bin", SYS_MAX_PATH);
+    strncat(anim_favorites_path,  sys_user_path(), SYS_MAX_PATH - 1);
+    strncat(anim_favorites_path, "/dynos/anim_favorites.bin", SYS_MAX_PATH - 1);
 
     SaturnFormatStream stream = saturn_format_output("STFA", curr_ver);
     saturn_format_new_section(&stream, "DATA");

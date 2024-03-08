@@ -80,6 +80,7 @@ jobs:
         mv build/us_pc/saturn.us.f3dex2e AppDir/usr/bin/
         mkdir -p AppDir/custom_assets/
         cp -r build/us_pc/* AppDir/custom_assets/
+        cp -r res/ AppDir/custom_assets/
     - name: Install additional necessary libraries to AppDir
       run: |
         mkdir -p AppDir/usr/lib/
