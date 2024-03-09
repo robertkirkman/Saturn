@@ -404,8 +404,12 @@ void imgui_update_theme() {
 
 // Set up ImGui
 
+fs::path imgui_config_path;
+
 void saturn_imgui_init_backend(SDL_Window * sdl_window, SDL_GLContext ctx) {
     window = sdl_window;
+
+    imgui_config_path = fs::path(std::string(sys_user_path()) + "/imgui.ini");
 
     const char* glsl_version = "#version 120";
     ImGuiContext* imgui = ImGui::CreateContext();

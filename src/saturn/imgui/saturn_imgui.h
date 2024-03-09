@@ -60,6 +60,8 @@ extern std::vector<std::pair<std::string, std::string>> theme_list;
 
 extern bool k_context_popout_open;
 
+extern fs::path imgui_config_path;
+
 extern "C" {
 #endif
     void saturn_imgui_init_backend(SDL_Window *, SDL_GLContext);

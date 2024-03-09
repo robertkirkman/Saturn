@@ -1,15 +1,14 @@
 name: Compile
 
 on:
+  workflow_dispatch:
   release:
     types:
       - published
-  push:
-    branches: [ "appimage" ]
 
 jobs:
   windows:
-    if: github.event_name == 'push'
+    if: github.event_name != 'release'
     name: Windows (MSYS2)
 
     runs-on: windows-latest
@@ -36,7 +35,7 @@ jobs:
         path: D:\a\Saturn\Saturn\build\us_pc\
 
   linux:
-    if: github.event_name == 'push'
+    if: github.event_name != 'release'
     name: Linux
 
     runs-on: ubuntu-latest
