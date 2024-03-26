@@ -782,7 +782,9 @@ void saturn_imgui_update() {
                 ImGui::Separator();
 
                 if (ImGui::MenuItem("Stats",        NULL, windowStats == true)) windowStats = !windowStats;
-                if (ImGui::MenuItem(ICON_FK_LINE_CHART " Timeline Editor", "F6", k_popout_open == true)) {
+                ImGui::Text(ICON_FK_LINE_CHART);
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Timeline Editor", "F6", k_popout_open == true)) {
                     k_popout_open = !k_popout_open;
                     windowSettings = false;
                 }
