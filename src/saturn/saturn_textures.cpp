@@ -41,6 +41,9 @@ using namespace std;
 bool custom_eyes_enabled;
 bool show_vmario_emblem;
 
+extern s16 gCutsceneTimer;
+extern s16 sCutsceneShot;
+
 /* Loads subfolders into an expression */
 std::vector<TexturePath> LoadExpressionFolders(std::string FolderPath) {
     std::vector<TexturePath> folders;
@@ -176,6 +179,12 @@ const void* saturn_bind_texture(const void* input) {
     if (input == (const void*)0x7365727574786574) return input;
     
     std::string texName = inputTexture;
+
+    if (gMarioState->action == ACT_INTRO_CUTSCENE && texName.find("segment2") != std::string::npos && gCutsceneTimer < 360 && sCutsceneShot == 0) return inputTexture;
+
+    if (texName == "textures/segment2/segment2.0F458.ia8.png" ||
+        texName == "textures/segment2/segment2.0FC58.ia8.png") return inputTexture;
+    return "actors/toad/toad_face.rgba16.png";
 
     // Custom model expressions
     if (current_model.Active && texName.find("saturn_") != std::string::npos) {
@@ -325,7 +334,7 @@ const void* saturn_bind_texture(const void* input) {
     if (texName.find("textures/skyboxes/cloud.") != string::npos)
         return static_cast<const void*>(stack_to_heap(texName.replace(18, 5, "cloud_floor"))->c_str());
 
-    return input;
+    return "actors/toad/toad_face.rgba16.png";
 }
 
 void saturn_copy_file(string from, string to) {
